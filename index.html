@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <style type="text/css">
+    a:link {
+      color: black;
+      text-decoration: none;
+    }
+
+    a:visited {
+      color: black;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: blue;
+      text-decoration: underline;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>ViBE-SVC Demo</title>
+  <!-- Font Awesome icons (free version)-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+    crossorigin="anonymous"></script>
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="css/styles.css" rel="stylesheet">
+  <!-- Fonts CSS-->
+  <link rel="stylesheet" href="css/heading.css">
+  <link rel="stylesheet" href="css/body.css">
+  <script>
+    function createTable(dir, exp, audio, script, idx = 1, row = 3) {
+
+      html = "<table class=\"table table-responsive align-content-center\" style=\"background-color: white; border-radius: 20px\">"
+      html += "<thead><tr><th colspan=\"5\" style=\"width: 40%\">"
+      html += "<div class=\"text-left\">"
+      html += "Script: <i>"
+      html += script["script"]
+      html += "</i></div>"
+      html += "<div class=\"text-left\">"
+      html += "\n(Pronunciation): <i>"
+      html += script["pronun"]
+      html += "</i></div>"
+      html += "</th></tr></thead>"
+      html += "<tbody><tr>"
+      for (var key in exp) {
+        if (idx % row == 0) {
+          html += "<tr>"
+        }
+        html += "<td style=\"vertical-align: top;\"><p></p>"
+        html += key
+        html += "<div class=\"text-center\"><audio"
+        if (row > 3) {
+          html += " controls=\"controls\" style=\"width: 190px;\"><source src="
+        } else {
+          html += " controls=\"controls\"><source src="
+        }
+        f = dir + "/" + exp[key] + ".wav"
+        html += f
+        html += " type=\"audio/wav\" /></audio></div></td>"
+        idx += 1
+        if (idx % row == 0) {
+          html += "</tr>"
+        }
+      }
+      html += "</tr></tbody></table>"
+      return html
+    }
+  </script>
+</head>
+
+<body id="page-top">
+  <nav class="navbar navbar-expand-lg bg-info fixed-top" id="mainNav">
+    <div class="container"><a class="navbar-brand js-scroll-trigger" href="#page-top">ViBE-SVC</a>
+      <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button"
+        data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+        aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+              href="#abstract">Abstract</a></li>
+          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+              href="#style_only">Style-Only<br>Conversion</a></li>
+          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+              href="#timbre_n_style">Timbre & Style<br>Conversion</a></li>
+          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+              href="#vibrato_scaling">Vibrato Scaling</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="masthead bg-white text-left"> <!-- text-black 사용 가능 -->
+    <div class="container d-flex align-items-center flex-column">
+      <!-- Masthead Heading-->
+      <h1 class="masthead-heading mb-0 text-center">
+        VibE-SVC: Vibrato Extraction with High-frequency F0 Contour for Singing Voice Conversion
+      </h1>
+      <!-- Masthead Subheading-->
+      <p class="pre-wrap lead">&nbsp;</p>
+      <p class="pre-wrap masthead-subheading font-weight-light mb-0 font-italic">
+        Joon-Seung Choi, Dong-Min Byun, Hyung-Seok Oh and Seong-Whan Lee
+      </p>
+    </div>
+  </header>
+
+  <!-- Abstraction -->
+  <section class="page-section portfolio" id="abstract">
+    <div class="container">
+      <!-- Portfolio Section Heading-->
+      <div class="text-center">
+        <h2 class="page-section-heading text-secondary mb-0 d-inline-block">Abstract</h2>
+      </div>
+      <!-- Icon Divider-->
+      <div class="divider-custom">
+        <div class="divider-custom"></div>
+      </div>
+      <!-- Portfolio Grid Items-->
+      <div class="row justify-content-center">
+        <div class="col-lg-12 ml-auto">
+          <p class="pre-wrap lead" style="word-wrap: normal;">Controlling singing style is crucial for achieving an expressive and natural singing voice. Among the various style factors, vibrato plays a key role in conveying emotions and enhancing musical depth. However, modeling vibrato remains challenging due to its dynamic nature, making it difficult to controlin singing voice conversion. To address this, we propose VibE-SVC, a controllable singing voice conversion model that explicitly extracts and manipulates vibrato using discrete wavelet transform. Unlike previous methods that model vibrato implicitly, our approach decomposes the F0 contour into frequency components, enabling precise transfer. This allows vibrato control for enhanced flexibility. Experimental results show that VibE-SVC effectively transforms singing styles while preserving speaker similarity. Both subjective and objective evaluations confirm high-quality conversion.</p>
+        </div>
+
+        <div class="text-center">
+          <br>
+          <br>
+          <img width="40%" src="./assets/figure/fig_svc.png">
+          <img width="50%" src="./assets/figure/fig_converter.png">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================== -->
+  <!-- ========================== -->
+  <!--   Style_only conversion    -->
+  <!-- ========================== -->
+  <!-- ========================== -->
+  <section class="page-section bg-success text-white mb-0" id="style_only" style="width:100%">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="page-section-heading d-inline-block">
+          Style-Only Converison
+        </h2>
+        <p class="pre-wrap lead">
+          <br>Straight-to-Vibrato Conversion<br>
+        </p>
+      </div>
+
+      <div class="divider-custom divider-light">
+      </div>
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <table class="table table-responsive align-content-center;"
+            style="background-color: rgba(255, 255, 255, 0.993); border-radius: 20px">
+            <thead>
+              <tr>
+                <th style="width: 100%;">Source Speaker</th>
+                <th style="width: 100%">Converted </th>
+                <th style="width: 100%"> </th>
+                <th style="width: 100%"></th>
+              </tr>
+            </thead>
+            <!-- Female style-only conversion audio samples -->
+            <tbody>
+              <tr>
+                <td rowspan="2" style="vertical-align: top; width :100%">
+                  <p>Female 6<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="./audio/style_only_conversion/straight_2_vibrato/sample1/source_female6_straight_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ Style Emb<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/sovits_styleID_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/sovits_styleIDdwt_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ PST<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/sovits_pst_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/vibesvc_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/vibesvc_nompd_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample1/vibesvc_origf0_female6_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+
+              </tr>
+            </tbody>
+            <!-- Male style-only conversion audio samples -->
+            <tbody>
+              <tr>
+                <td rowspan="2" style="vertical-align: top; width :100%">
+                  <p>Male 5<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/source_male5_straight_caro_1.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ Style Emb<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/sovits_styleID_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/sovits_styleIDdwt_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>SoVITS w/ PST<br></p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/sovits_pst_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/vibesvc_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/vibesvc_nompd_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td>
+                  <p>VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 240px">
+                    <source src="audio/style_only_conversion/straight_2_vibrato/sample2/vibesvc_origf0_male5_straight_caro_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- ============================== -->
+      <!-- Vibrato to straight conversion -->
+      <!-- ============================== -->
+      <div class="text-center">
+        <p class="pre-wrap lead">
+          <br>Vibrato-to-Straight Conversion<br>
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <table class="table table-responsive align-content-center;"
+            style="background-color: rgba(255, 255, 255, 0.993); border-radius: 20px">
+            <thead>
+              <tr>
+                <th style="width: 300px;">Source Speaker</th>
+                <th style="width: 300px">Converted </th>
+                <th style="width: 300px"> </th>
+                <th style="width: 300px"></th>
+              </tr>
+            </thead>
+            <!-- Female style-only conversion audio samples -->
+            <tbody>
+              <tr>
+                <td rowspan="2" style="vertical-align: top; width :300px">
+                  <p>Female 8<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/source_female8_vibrato_caro_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ Style Emb<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/sovits_styleID_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/sovits_styleIDdwt_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ PST<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/sovits_pst_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style = "width:300px">
+                  <p>VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/vibesvc_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/vibesvc_nompd_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample1/vibesvc_origf0_female8_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+
+              </tr>
+            </tbody>
+            <!-- Male style-only conversion audio samples -->
+            <tbody>
+              <tr>
+                <td rowspan="2" style="vertical-align: top; width :300px">
+                  <p>Male 2<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/source_male2_vibrato_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ Style Emb<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/sovits_styleID_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/sovits_styleIDdwt_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>SoVITS w/ PST<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/sovits_pst_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style = "width:300px">
+                  <p>VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/vibesvc_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/vibesvc_nompd_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style = "width:300px">
+                  <p>VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/style_only_conversion/vibrato_2_straight/sample2/vibesvc_origf0_male2_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== -->
+  <!-- ========================== -->
+  <!-- Timbre & style conversion  -->
+  <!-- ========================== -->
+  <!-- ========================== -->
+  <section class="page-section bg-primary text-white mb-0" id="timbre_n_style">
+    <div class="container">
+      <!-- ============================== -->
+      <!-- straight-to-vibrato conversion  -->
+      <!-- ============================== -->
+      <div class="text-center">
+        <h2 class="page-section-heading d-inline-block">Timbre & Style Conversion</h2>
+        <p class="pre-wrap lead">
+          <br>Straight-to-Vibrato Conversion<br>
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <table class="table table-responsive align-content-center"
+            style="background-color: rgba(255, 255, 255, 0.993); border-radius: 20px">
+            <thead>
+              <tr>
+                <th style="width:100%">Source Speaker</th>
+                <th style="width:100%">Target Speaker</th>
+                <th style="width:100%">Converted </th>
+                <th style="width:100%"> </th>
+                <th style="width:100%"> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Female 7<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/source_female7_straight_u_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Female 5<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/target_spk_female5_straight_i_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/sovits_styleID_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/sovits_styleIDdwt_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/sovits_pst_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/vibesvc_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/vibesvc_nompd_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/vibesvc_origf0_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/vibesvc_lev3_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample1/vibesvc_lev5_female5_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Female 1<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/source_female1_straight_caro_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Male 2<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/target_spk_male2_straight_dona_1.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/sovits_styleID_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/sovits_styleIDdwt_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/sovits_pst_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/vibesvc_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/vibesvc_nompd_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/vibesvc_origf0_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/vibesvc_lev3_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample2/vibesvc_lev5_male2_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Male 9<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/source_male9_straight_row_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Male 8<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/target_spk_male8_straight_dona_1.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/sovits_styleID_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/sovits_styleIDdwt_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/sovits_pst_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/vibesvc_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/vibesvc_nompd_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/vibesvc_origf0_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/vibesvc_lev3_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample3/vibesvc_lev5_male8_straight_row_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Male 9<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/source_male9_straight_u_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Female 7<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/target_spk_female7_straight_e_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/sovits_styleID_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/sovits_styleIDdwt_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/sovits_pst_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/vibesvc_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/vibesvc_nompd_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/vibesvc_origf0_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/vibesvc_lev3_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/straight_2_vibrato/sample4/vibesvc_lev5_female7_straight_u_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================== -->
+      <!-- vibrato-to-straight conversion  -->
+      <!-- ============================== -->
+      <div class="text-center">
+        <p class="pre-wrap lead">
+          <br>Vibrato-to-Straight Conversion<br>
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <table class="table table-responsive align-content-center"
+            style="background-color: rgba(255, 255, 255, 0.993); border-radius: 20px">
+            <thead>
+              <tr>
+                <th style="width:100%">Source Speaker</th>
+                <th style="width:100%">Target Speaker</th>
+                <th style="width:100%">Converted </th>
+                <th style="width:100%"> </th>
+                <th style="width:100%"> </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Female 8<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/source_female8_vibrato_caro_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Female 2<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/target_spk_female2_vibrato_e_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/sovits_styleID_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/sovits_styleIDdwt_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/sovits_pst_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/vibesvc_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/vibesvc_nompd_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/vibesvc_origf0_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/vibesvc_lev3_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample1/vibesvc_lev5_female2_vibrato_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Female 2<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/source_female2_vibrato_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Male 3<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/target_male3_vibrato_o_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/sovits_styleID_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/sovits_styleIDdwt_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/sovits_pst_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/vibesvc_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/vibesvc_nompd_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/vibesvc_origf0_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/vibesvc_lev3_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample2/vibesvc_lev5_male3_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Male 11<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/source_male11_vibrato_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Male 5<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/target_spk_male5_vibrato_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/sovits_styleID_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/sovits_styleIDdwt_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/sovits_pst_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/vibesvc_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/vibesvc_nompd_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/vibesvc_origf0_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/vibesvc_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample3/vibesvc_nompd_male5_vibrato_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Male 3<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/source_male3_vibrato_row_1.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Female 5<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/target_spk_female5_vibrato_row_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ Style Emb<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/sovits_styleID_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS <br>w/ Style Emb & DWT<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/sovits_styleIDdwt_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">SoVITS w/ PST<br><br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/sovits_pst_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC (Ours)</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/vibesvc_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o MPD</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/vibesvc_nompd_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC w/o DWT</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/vibesvc_origf0_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 3]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/vibesvc_lev3_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">VibE-SVC [DWT level 5]</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/timbre_n_style_conversion/vibrato_2_straight/sample4/vibesvc_lev5_female5_vibrato_row_1.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ============================== -->
+  <!-- ============================== -->
+  <!--        Vibrato scaling         -->
+  <!-- ============================== -->
+  <!-- ============================== -->
+  <section class="page-section bg-secondary text-white mb-0" id="vibrato_scaling">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="page-section-heading d-inline-block">Vibrato Scaling</h2>
+        <p class="pre-wrap lead">
+          
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <table class="table table-responsive align-content-center"
+            style="background-color: rgba(255, 255, 255, 0.993); border-radius: 20px">
+            <thead>
+              <tr>
+                <th style="width:100%">Source Speaker</th>
+                <th style="width:100%">Target Speaker</th>
+                <th style="width:100%">Converted </th>
+                <th style="width:100%"> </th>
+                <th style="width:100%"> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Female 6<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/source_female6_straight_caro_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Male 5<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/target_spk_male5_straight_caro_1.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 1.0<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x1_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.1<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x01_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.3<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x03_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.5</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x05_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.7</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x07_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 2.0</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_x2_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 1</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_frame_type1_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 2</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_frame_type2_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 3</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample1/scaling_frame_type3_male5_straight_caro_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left; ">Male 7<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/source_male11_straight_a_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td rowspan="3" style="vertical-align: top;width: 100%">
+                  <p style="text-align: left;">Female 8<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/target_spk_female4_straight_u_0.wav " type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 1.0<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x1_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.1<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x01_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.3<br></p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x03_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.5</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x05_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 0.7</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x07_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Scaling 2.0</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_x2_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 1</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_frame_type1_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 2</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_frame_type2_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+                <td style="width:100%">
+                  <p style="text-align: left;">Frame-level control Type 3</p>
+                  <audio id="player" controls style="width: 190px">
+                    <source src="audio/vibrato_scaling/global_level_control/sample2/scaling_frame_type3_female4_straight_a_0.wav" type="audio/wav">
+                  </audio>
+                </td>
+              </tr>
+            </tbody>
+            
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+  <div class="scroll-to-top d-lg-none position-fixed"><a
+      class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i
+        class="fa fa-chevron-up"></i></a></div>
+  <!-- Bootstrap core JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+  <!-- Third party plugin JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+  <script src="js/scripts.js"></script>
+  <!-- Bootstrap slider JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"
+    integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA=="
+    crossorigin="anonymous"></script>
+  <!-- slider JS -->
+  <script type="text/javascript">
+  </script>
+</body>
+
+</html>
