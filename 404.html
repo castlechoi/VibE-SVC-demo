@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Correct link</title>
+  <script>
+    const path = window.location.pathname;
+    const correctPath = "https://castlechoi.github.io/VibE-SVC-demo";
+
+    if (path.endsWith('.')) {
+      window.location.replace(path.slice(0, -1));
+    }
+    else {
+
+        window.location.replace(correctPath);
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
